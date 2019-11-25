@@ -30,7 +30,7 @@ function returnFirstArgument(param) {
  Пример:
    sumWithDefaults(10) вернет 110
  */
-function sumWithDefaults(a, b) {
+function sumWithDefaults(a, b = b || 100) {
     return a + b;
 }
 
@@ -74,7 +74,13 @@ function returnCounter(number) {
  Пример:
    returnArgumentsArray(1, 2, 3) вернет [1, 2, 3]
  */
-function returnArgumentsArray() {}
+function returnArgumentsArray() {
+    let result = [];
+    for (let i = 0; i < arguments.length; i++) {
+        result[i] = arguments[i];
+    }
+    return result;
+}
 
 /*
  Задание 6 *:
