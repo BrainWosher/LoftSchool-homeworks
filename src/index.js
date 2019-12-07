@@ -29,19 +29,6 @@ function delayPromise(seconds) {
  */
 function loadAndSortTowns() {
 
-    // return new Promise((resolve, reject) => {
-
-    //     fetch('https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json')
-    //         .then(response => {
-    //             if (response.status >= 400) {
-    //                 return Promise.reject();
-    //             }
-    //             return response.json();
-    //         })
-    //         .then()
-    //         .catch();
-    // })
-
     return new Promise(function(resolve, reject) {
         var xhr = new XMLHttpRequest();
         xhr.open('GET', 'https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json');
