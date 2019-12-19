@@ -45,8 +45,93 @@ const listTable = homeworkContainer.querySelector('#list-table tbody');
 
 filterNameInput.addEventListener('keyup', function() {
     // здесь можно обработать нажатия на клавиши внутри текстового поля для фильтрации cookie
+    let cookieParse = parseCookie();
+    const filterValue = filterNameInput.value;
+    listTable.innerHTML = '';
+
+    filterCookie(cookieParse, isMatching, filterValue);
 });
 
 addButton.addEventListener('click', () => {
     // здесь можно обработать нажатие на кнопку "добавить cookie"
+    document.cookie = `${addNameInput.value}=${addValueInput.value}`;
+    listTable.innerHTML = '';
+    if (filterNameInput.value === '') {
+        let cookie = parseCookie();
+        renderCookie(cookie);
+    } else {
+        let filtercookie = parseFilterCookie(filterNameInput.value);
+        renderCookie(filtercookie);
+    }
 });
+
+window.addEventListener('DOMContentLoaded', () => {
+    const allCookie = parseCookie();
+    renderCookie(allCookie);
+});
+
+function parseCookie() {
+    let cookie = document.cookie.split('; ').reduce((prev, current) => {
+        const [name, value] = current.split('=');
+        prev[name] = value;
+        return prev;
+    }, {});
+    return cookie;
+}
+
+function parseFilterCookie(filterValue) {
+    let cookie = document.cookie.split('; ').reduce((prev, current) => {
+        const [name, value] = current.split('=');
+        if (isMatching(name, filterValue) || isMatching(value, filterValue)) {
+            prev[name] = value;
+        }
+        return prev;
+    }, {});
+    return cookie;
+}
+
+function renderCookie(cookie) {
+    for (let key in cookie) {
+        let row = listTable.insertRow(listTable.rows.length);
+        let cell = row.insertCell(0);
+        cell.innerText = key;
+        let cell2 = row.insertCell(1);
+        cell2.innerText = cookie[key];
+        let cell3 = row.insertCell(2);
+        let button = document.createElement("BUTTON");
+        button.textContent = 'Удалить';
+        cell3.appendChild(button);
+        button.addEventListener('click', function() {
+            listTable.removeChild(row);
+            document.cookie = key + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        });
+    }
+}
+
+function filterCookie(cookieParse, isMatching, filterValue) {
+    for (let key in cookieParse) {
+        if (typeof(key) != "undefined" && typeof(cookieParse[key]) != "undefined") {
+
+            if (isMatching(key, filterValue) || isMatching(cookieParse[key], filterValue)) {
+
+                let row = listTable.insertRow(listTable.rows.length);
+                let cell = row.insertCell(0);
+                cell.innerText = key;
+                let cell2 = row.insertCell(1);
+                cell2.innerText = cookieParse[key];
+                let cell3 = row.insertCell(2);
+                let button = document.createElement("BUTTON");
+                button.textContent = 'Удалить';
+                cell3.appendChild(button);
+                button.addEventListener('click', function() {
+                    listTable.removeChild(row);
+                    document.cookie = key + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+                });
+            }
+        }
+    }
+}
+
+const isMatching = (full, str) => {
+    return full.toLowerCase().indexOf(str.toLowerCase()) > -1;
+};
